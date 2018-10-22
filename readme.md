@@ -1,5 +1,4 @@
-# Dwarf-Fortress-Krona
-Make beautiful Krona plots from dwarf fotress world sites and pops file.
+#Dwarf fortress krona plots
 
 This script makes two krona plots from dwarf fortress world sites and pops file.
 Plot 1 is an overview of civilisations (dwarf,goblins,elf's, ect.) than populations groups (goverments) and than there sites and the amount of units in the cites
