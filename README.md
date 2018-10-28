@@ -6,9 +6,14 @@ Plot 1 is an overview of civilisations (dwarf,goblins,elf's, ect.) than populati
 
 Plot 2 is an overview of inhabits per site per population(government).
 
+## Example
+![alt text](https://raw.githubusercontent.com/casperp/Dwarf-Fortress-Krona/master/examples/example1.png "plot example")
+[Link to interactive example](https://mrrobotfish.github.io/html/plot_0.html)
 
+![alt text](https://raw.githubusercontent.com/casperp/Dwarf-Fortress-Krona/master/examples/example2.png "plot example")
+[Link to interactive example](https://mrrobotfish.github.io/html/plot_1.html)
 ## requirements 
-1. krona needs to be installed [] This wil only work on mac os x and linux
+1. [krona](https://github.com/marbl/Krona/wiki) needs to be installed  This wil only work on mac os x and linux
 2. python3.X 
 
 ## usages 
