@@ -3,11 +3,19 @@ import fnmatch
 import re
 import datetime
 
-class worldInfoClass:
-    def __init__(self, file_sideload=None,debug=False):
-        """
 
-        :param file_sideload:
+class worldInfoClass:
+    def __init__(self, file_sideload=None, debug=False):
+        """This is the init for the worldinfoclass
+        Fist the parameters are set and check if an file is givin
+        if no file is given fnmatch is used to search for and df file.
+        than that file is used.
+
+        :param file_sideload: input file. If no file is given the class
+         will search for a df file.
+        :param debug: True or False, enables future debug options.
+
+
         """
         self.debug = debug
         self.pops = []
@@ -25,11 +33,14 @@ class worldInfoClass:
         self.__site_info()
 
     def __count_pop(self):
-        """ haald de pop size uit het bestand en plaats het
-                in een dicte een een lijst met civs
+        """This function reads the population size for every cite.
 
-               :return: None
-               """
+        First the file is opend and split on sites.
+        Than for every site the population is counted and
+         added to a list and dictionary.
+
+        :return: None
+        """
         with open(self.__file, 'r', encoding='latin_1') as info:
             file_lines = info.read().splitlines()
             pop_info = file_lines[0:file_lines.index("Sites")]
@@ -43,12 +54,14 @@ class worldInfoClass:
                     population.strip('\t').split(' ')[1]
 
     def __site_info(self):
-        """ript site info van de txt. haald meta er uit hierna
-        de naam en de typer of site. door meta info word de line skip pepaald voor pop info.
-        ierna word pop geteld en in de site dict gezet.
-
-        :return:
         """
+        Here is the site info procesed.
+        Fist the metadata is collected than the name en the type of site.
+        the info is set in the site dict.
+
+        :return:  None
+        """
+
         sites = []
         site_list = self.__file_content[
                     self.__file_content.index(
@@ -73,12 +86,15 @@ class worldInfoClass:
             del site_meta
 
     def __meta_site_info(self, list):
-        """haal de meta info er uit site info en parents ect.
-        als er een neiwe tag is gewoon toevoegen en dan een check er bij
-        lineskipt haald deze info dan uit pop info.
+        """
+        This function gets the lineskip. The skip skips the tag
+        with info like admin owner en parent.
+         This info is added to and site meta dict
 
-        :param list:
-        :return:
+        :param list: list with lines per site (list)
+        :return: site_meta:  metadata from the site (dict)
+        , line_skipe: amount of lines to skip (int)
+        , pop_owner: population owner (str)
         """
         site_meta = {}
         line_skipe = 0
@@ -89,27 +105,26 @@ class worldInfoClass:
                                                             pop_owner,
                                                             site_meta)
 
-
-        for nobels in ['administrator','law_giver','Owner','Parent','lord','lady']:
+        for nobels in ['administrator', 'law_giver', 'Owner', 'Parent',
+                       'lord', 'lady']:
             if not nobels in site_meta:
                 site_meta[nobels] = 'none'
-        #
-        #
-        # if not "law_giver" in site_meta:
-        #     site_meta['law_giver'] = 'None'
-        # if not "Owner" in site_meta:
-        #     site_meta['Owner'] = "None"
-        # if not "Parent" in site_meta:
-        #     site_meta['Parent'] = 'None'
-        # if not "lord" in site_meta:
-        #     site_meta['lord'] = 'None'
-        # if not "lady" in site_meta:
-        #     site_meta['lady'] = 'None'
+
         return site_meta, line_skipe, pop_owner
 
     def __check_meta_stuff(self, line, line_skipe, pop_owner,
                            site_meta):
+        """ Check if the metadata exist. and add count to lineskip
+        add owner info.
 
+        :param line:  list with lines per site (list)
+        :param line_skipe: amount of lines to skip (int)
+        :param pop_owner: population owner (str)
+        :param site_meta:  metadata from the site (dict)
+
+        :return: line_skipe: amount of lines to skip (int)
+                  pop_owner: population owner (str)
+        """
 
         if 'Owner:' in line:
             site_meta['Owner'] = line.split(":")[1].split(',')[0]
@@ -131,14 +146,19 @@ class worldInfoClass:
             site_meta['lady'] = line.split(":")[1].split(',')[0]
             line_skipe += 1
         if 'administrator' in line:
-            site_meta['administrator'] = line.split(":")[1].split(',')[0]
+            site_meta['administrator'] = line.split(":")[1].split(',')[
+                0]
             line_skipe += 1
         return line_skipe, pop_owner
 
     def make_plot_file_normale_civ_pop(self, fileout='plot_text.txt'):
-        """werkt dus neit aanraken.
-                hier word de ino gemaakt voor een normale pop plot.
-                bestaat uit : aantal, pop, civ,owner,naam"""
+        """
+        This function makes the file for the default plot
+          The file data structure is : count  pop, civ,owner,name
+
+        :param fileout: output file for the plot info. (str)
+        :return: None
+        """
         lines_info = []
         for key, items in self.popsize.items():
             pop_size = 0
@@ -162,17 +182,18 @@ class worldInfoClass:
         with open(fileout, 'w') as file:
             file.writelines(lines_info)
         if self.debug:
-            with open(str(datetime.date.today())+fileout, 'w') as file:
+            with open(str(datetime.date.today()) + fileout,
+                      'w') as file:
                 file.writelines(lines_info)
 
     def plot_pop_per_civ(self, fileout='plot_text_pop_civ.txt'):
-        """Hier word de andere plot gemaakt. niet gericht op soort sit maar
+        """
+         This function makes the file for the plot per civ
+          The file data structure is : count civ,site,organise
 
-         text structuur: civ,site,organisme.
-
-         :param fileout:
-         :return:
-         """
+        :param fileout: output file for the plot info. (str)
+        :return: None
+        """
         lines_info = []
         for name, info in self.sites.items():
             if len(info[3]) > 3:
@@ -191,8 +212,10 @@ class worldInfoClass:
         with open(fileout, 'w') as file:
             file.writelines(lines_info)
         if self.debug:
-            with open(str(datetime.date.today())+fileout, 'w') as file:
+            with open(str(datetime.date.today()) + fileout,
+                      'w') as file:
                 file.writelines(lines_info)
+
 
 if __name__ == '__main__':
     tester = worldInfoClass(
@@ -200,5 +223,3 @@ if __name__ == '__main__':
 
     tester.make_plot_file_normale_civ_pop()
     tester.plot_pop_per_civ()
-
-
